@@ -18,24 +18,25 @@ You can  simply use pip to install the latest version of infiniai.
 <hr>
 
 <p align="center">
-  <img width="640" height="360" src="https://www.computervision.zone/wp-content/uploads/2021/05/Face-Detection-2.jpg">
+  <img width="640" height="360" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/facedetection.png">
 </p>
 
 <pre>
 from infiniai.FaceDetectionModule import FaceDetector
 import cv2
+import time
 
 cap = cv2.VideoCapture(0)
-detector = FaceDetector()
-
+pTime = 0
+detector = FaceDetector( )
 while True:
-    success, img = cap.read()
+    success, img = cap.read( )
     img, bboxs = detector.findFaces(img)
-
-    if bboxs:
-        # bboxInfo - "id","bbox","score","center"
-        center = bboxs[0]["center"]
-        cv2.circle(img, center, 5, (255, 0, 255), cv2.FILLED)
+    print(bboxs)
+    cTime = time.time( )
+    fps = 1 / (cTime - pTime)
+    pTime = cTime
+    cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 5, (0, 255, 0), 5)
 
     cv2.imshow("Image", img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -52,48 +53,33 @@ cv2.destroyAllWindows()
 <hr>
 
 <p align="center">
-  <img width="640" height="360" src="https://github.com/cvzone/cvzone/blob/master/Results/Fingers-Distance.jpg">
+  <img width="640" height="360" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/handtracking.png">
 </p>
 
-#### Basic Code Example 
 <pre>
-from infiniai.HandTrackingModule import HandDetector
+from infiniai.HandTrackingModule import handDetector
 import cv2
+import time
+import infiniai.HandTrackingModule as htm
 
+pTime = 0
+cTime = 0
 cap = cv2.VideoCapture(0)
-detector = HandDetector(detectionCon=0.8, maxHands=2)
+detector = handDetector()
 while True:
-    # Get image frame
     success, img = cap.read()
-    # Find the hand and its landmarks
-    hands, img = detector.findHands(img)  # with draw
-    # hands = detector.findHands(img, draw=False)  # without draw
+    img = detector.findHands(img)
+    PosList = detector.findPosition(img)
+    if len(PosList) != 0:
+        print(PosList[4])
 
-    if hands:
-        # Hand 1
-        hand1 = hands[0]
-        lmList1 = hand1["lmList"]  # List of 21 Landmark points
-        bbox1 = hand1["bbox"]  # Bounding box info x,y,w,h
-        centerPoint1 = hand1['center']  # center of the hand cx,cy
-        handType1 = hand1["type"]  # Handtype Left or Right
+    cTime = time.time()
+    fps = 1 / (cTime - pTime)
+    pTime = cTime
 
-        fingers1 = detector.fingersUp(hand1)
+    cv2.putText(img, str(int(fps)), (10, 70), cv2.FONT_HERSHEY_DUPLEX, 3, (255, 0, 0), 3)
 
-        if len(hands) == 2:
-            # Hand 2
-            hand2 = hands[1]
-            lmList2 = hand2["lmList"]  # List of 21 Landmark points
-            bbox2 = hand2["bbox"]  # Bounding box info x,y,w,h
-            centerPoint2 = hand2['center']  # center of the hand cx,cy
-            handType2 = hand2["type"]  # Hand Type "Left" or "Right"
-
-            fingers2 = detector.fingersUp(hand2)
-
-            # Find Distance between two Landmarks. Could be same hand or different hands
-            length, info, img = detector.findDistance(lmList1[8], lmList2[8], img)  # with draw
-            # length, info = detector.findDistance(lmList1[8], lmList2[8])  # with draw
-    # Display
-    cv2.imshow("Image", img)
+    cv2.imshow("Webcam", img)
     cv2.waitKey(1)
 cap.release()
 cv2.destroyAllWindows()
@@ -108,29 +94,39 @@ cv2.destroyAllWindows()
 <hr>
 
 <p align="center">
-  <img width="640" height="360" src="https://www.computervision.zone/wp-content/uploads/2021/04/vlcsnap-2021-03-27-22h34m51s546.jpg">
+  <img width="640" height="360" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/pose.png">
 </p>
 
 <pre>
 from infiniai.PoseEstimationModule import poseDetector
 import cv2
+import time
 
 cap = cv2.VideoCapture(0)
-detector = PoseDetector()
+pTime = 0
+detector = poseDetector()
+
 while True:
+
     success, img = cap.read()
     img = detector.findPose(img)
-    lmList, bboxInfo = detector.findPosition(img, bboxWithHands=False)
-    if bboxInfo:
-        center = bboxInfo["center"]
-        cv2.circle(img, center, 5, (255, 0, 255), cv2.FILLED)
+    lmList = detector.findPosition(img, draw=False)
+
+    if len(lmList) != 0:
+        print(lmList[14])
+        cv2.circle(img, (lmList[14][1], lmList[14][2]), 15, (0, 0, 255), cv2.FILLED)
+
+    cTime = time.time( )
+    fps = 1 / (cTime - pTime)
+    pTime = cTime
+
+    cv2.putText(img, str(int(fps)), (70, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
     cv2.imshow("Image", img)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 cap.release()
 cv2.destroyAllWindows()
-
 </pre>
 
 
@@ -141,7 +137,7 @@ cv2.destroyAllWindows()
 <hr>
 
 <p align="center">
-  <img width="640" height="360" src="https://www.computervision.zone/wp-content/uploads/2021/05/Face-Landmarks-2.jpg">
+  <img width="640" height="360" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/facemesh.png">
 </p>
 
 <pre>
