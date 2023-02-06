@@ -94,7 +94,7 @@ cv2.destroyAllWindows()
 <hr>
 
 <p align="center">
-  <img width="640" height="360" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/pose.png">
+  <img width="640" height="500" src="https://github.com/infiniai-tech/infiniai/blob/main/Results/pose.png">
 </p>
 
 <pre>
