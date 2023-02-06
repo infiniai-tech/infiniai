@@ -1,9 +1,3 @@
-"""
-Supporting Functions for Computer vision using OpenCV
-By: Computer Vision Zone
-Website: https://www.computervision.zone/
-"""
-
 import cv2
 import numpy as np
 import copy

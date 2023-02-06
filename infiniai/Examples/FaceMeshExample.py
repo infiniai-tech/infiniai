@@ -1,4 +1,4 @@
-from FaceMeshModule import FaceMeshDetector
+from infiniai.FaceMeshModule import FaceMeshDetector
 import cv2
 
 cap = cv2.VideoCapture(0)
